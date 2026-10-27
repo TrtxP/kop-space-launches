@@ -1,4 +1,4 @@
-const NO_DATA = 'Немає даних'
+import { NO_DATA } from "./constants";
 
 function toDate(iso: string | null): Date | null {
   if (iso === null) return null
