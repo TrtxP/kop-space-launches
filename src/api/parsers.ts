@@ -1,4 +1,4 @@
-import type { LaunchMission } from "../data/types";
+import type { AgencyOption, LaunchMission } from "../data/types";
 import { UNKNOWN_AGENCY } from "../data/constants";
 import { TENTATIVE_STATUS_IDS } from "./launchStatuses";
 
@@ -8,6 +8,9 @@ export interface ApiPage {
 }
 
 export const INVALID_RESPONSE_MESSAGE = 'Launch Library 2 повернув відповідь у неочікуваному форматі.'
+
+/** Префікс локального ключа агенції без API ID; ніколи не передається у серверний фільтр */
+export const LOCAL_AGENCY_ID_PREFIX = 'local:'
 
 export type JsonRecord = Record<string, unknown>
 
@@ -48,6 +51,9 @@ export function parseLaunchMission(raw: unknown): LaunchMission {
 
   const provider = readRecord(raw, 'launch_service_provider')
   const agency = readString(provider, 'name') ?? UNKNOWN_AGENCY
+  const providerId = readNumber(provider, 'id')
+  // Записи без ID отримують локальний ключ, який не збігається з числовими ID API
+  const agencyId = providerId !== null ? String(providerId) : `${LOCAL_AGENCY_ID_PREFIX}${agency}`
 
   const rocket = readRecord(raw, 'rocket')
   const configuration = readRecord(rocket, 'configuration')
@@ -64,6 +70,7 @@ export function parseLaunchMission(raw: unknown): LaunchMission {
     id,
     name: missionName ?? rawName,
     agency,
+    agencyId,
     rocket: rocketName,
     pad: padFormatted,
     status: statusName,
@@ -86,4 +93,32 @@ export function parsePage(raw: unknown, apiBaseUrl: string): ApiPage {
   }
 
   return { next, results: raw.results.map(parseLaunchMission) }
+}
+
+export interface AgencyApiPage {
+  next: string | null
+  results: AgencyOption[]
+}
+
+/** Запис довідника агенцій: потрібні цілий додатний id та непорожня назва */
+export function parseAgencyOption(raw: unknown): AgencyOption {
+  if (!isRecord(raw)) throw new Error(INVALID_RESPONSE_MESSAGE)
+
+  const id = readNumber(raw, 'id')
+  const name = readString(raw, 'name')
+  if (id === null || !Number.isInteger(id) || id <= 0 || name === null) throw new Error(INVALID_RESPONSE_MESSAGE)
+
+  return { id: String(id), name: name.trim() }
+}
+
+export function parseAgencyPage(raw: unknown, apiBaseUrl: string): AgencyApiPage {
+  if (!isRecord(raw) || !Array.isArray(raw.results)) throw new Error(INVALID_RESPONSE_MESSAGE)
+
+  const next = raw.next
+
+  if (next !== null && (typeof next !== 'string' || !next.startsWith(`${apiBaseUrl}/`))) {
+    throw new Error(INVALID_RESPONSE_MESSAGE)
+  }
+
+  return { next, results: raw.results.map(parseAgencyOption) }
 }

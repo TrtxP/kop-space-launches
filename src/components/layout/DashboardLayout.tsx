@@ -18,7 +18,7 @@ function DashboardLayout({ children }: DashboardLayoutProps) {
       </header>
       <main className="max-w-5xl mx-auto p-4 space-y-4">{children}</main>
       <footer className="border-t border-slate-200 dark:border-slate-800 p-4 text-sm text-slate-500 dark:text-slate-400 text-center">
-        Лабораторна робота №2. Черепанов Ілля. Група ЗІПЗ-24-1.
+        Лабораторна робота №3. Черепанов Ілля. Група ЗІПЗ-24-1.
       </footer>
     </div>
   )
