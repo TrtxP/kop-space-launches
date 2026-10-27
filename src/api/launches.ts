@@ -1,4 +1,4 @@
-import type { LaunchMission } from "../data/types";
+import type { LaunchMission, LaunchQuery } from "../data/types";
 import { fetchJson } from "./http";
 import { STARTED_STATUS_IDS } from "./launchStatuses";
 import { INVALID_RESPONSE_MESSAGE, parsePage, type ApiPage } from "./parsers";
@@ -13,6 +13,7 @@ async function fetchPage(url: string, signal: AbortSignal): Promise<ApiPage> {
 export async function fetchLaunchesThisYear(
   signal: AbortSignal,
   now: Date,
+  query: LaunchQuery
 ): Promise<LaunchMission[]> {
   const yearStart = new Date(Date.UTC(now.getUTCFullYear(), 0, 1))
   const params = new URLSearchParams({
@@ -21,8 +22,16 @@ export async function fetchLaunchesThisYear(
     net__lt: now.toISOString(),
     status__ids: STARTED_STATUS_IDS.join(','),
     limit: '100',
-    ordering: 'net',
+    ordering: query.ordering,
   })
+
+  if (query.search.trim()) {
+    params.set('search', query.search.trim())
+  }
+
+  if (query.agencyId) {
+    params.set('lsp__id', query.agencyId)
+  }
 
   const launchesById = new Map<string, LaunchMission>()
   const visitedUrls = new Set<string>()
@@ -45,6 +54,7 @@ export async function fetchLaunchesThisYear(
 export async function fetchNextLaunch(
   signal: AbortSignal,
   now: Date,
+  query: LaunchQuery
 ): Promise<LaunchMission | null> {
   const params = new URLSearchParams({
     mode: 'normal',
@@ -52,6 +62,14 @@ export async function fetchNextLaunch(
     ordering: 'net',
     limit: '1',
   })
+
+  if (query.search.trim()) {
+    params.set('search', query.search.trim())
+  }
+
+  if (query.agencyId) {
+    params.set('lsp__id', query.agencyId)
+  }
 
   const page = await fetchPage(`${API_BASE}/launches/upcoming/?${params}`, signal)
   return page.results.length > 0 ? page.results[0] : null

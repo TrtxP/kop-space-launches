@@ -1,6 +1,7 @@
 interface AgencyBarRowProps {
   agency: string
   count: number
+  total: number
   maxCount: number
   onIncrement: () => void
   onDecrement: () => void
@@ -11,13 +12,16 @@ interface AgencyBarRowProps {
 function AgencyBarRow({
   agency,
   count,
+  total,
   maxCount,
   onIncrement,
   onDecrement,
   onReset,
   isModified = false,
 }: AgencyBarRowProps) {
-  const percentage = maxCount > 0 ? (count / maxCount) * 100 : 0
+  const rawPercentage = maxCount > 0 ? (count / maxCount) * 100 : 0
+  // Захист від NaN/Infinity та виходу за межі 0–100%
+  const percentage = Number.isFinite(rawPercentage) ? Math.min(100, Math.max(0, rawPercentage)) : 0
   const buttonClass =
     'border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded px-2.5 py-0.5 text-xs font-mono font-medium hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 disabled:hover:bg-transparent dark:disabled:hover:bg-transparent transition-colors'
 
@@ -38,6 +42,7 @@ function AgencyBarRow({
           type="button"
           className={buttonClass}
           onClick={onIncrement}
+          disabled={count >= total}
           aria-label={`Збільшити кількість запусків для ${agency}`}
         >
           +

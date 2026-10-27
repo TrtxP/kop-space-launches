@@ -1,55 +1,25 @@
-import { useState, type ChangeEvent } from 'react'
+import { useState } from 'react'
 import type { LaunchMission, LoadStatus } from '../../../data/types'
 import MissionFilteredList from '../../widgets/mission-list/MissionFilteredList'
 import EmptyMessage from "../../ui/EmptyMessage"
 import LoadingMessage from "../../ui/LoadingMessage"
-import { compareMissions, type SortDirection, type SortField } from "./compareMissions"
 import { NO_DATA } from '../../../data/constants'
 import ErrorMesage from '../../ui/ErrorMessage'
 
-const ALL_AGENCIES = 'Усі'
-
 interface MissionListContainerProps {
+  // Видимі місії з урахуванням ручних лімітів планувальника 
   missions: LaunchMission[]
+  // Кількість місій у завантаженій API-вибірці
+  loadedCount: number
   status: LoadStatus
 }
 
-function MissionListContainer({ missions, status }: MissionListContainerProps) {
-  const [selectedAgency, setSelectedAgency] = useState<string>(ALL_AGENCIES)
+function MissionListContainer({ missions, loadedCount, status }: MissionListContainerProps) {
   const [selectedMissionId, setSelectedMissionId] = useState<string | null>(null)
-  const [sortField, setSortField] = useState<SortField>('date')
-  const [sortDirection, setSortDirection] = useState<SortDirection>('desc')
 
-  const handleAgencyChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedAgency(e.target.value)
-    setSelectedMissionId(null)
-  }
-
-  const handleSortFieldChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    setSortField(e.target.value === 'name' ? 'name' : 'date')
-  }
-
-  const handleDirectionToggle = () => {
-    setSortDirection(prev => (prev === 'asc' ? 'desc' : 'asc'))
-  }
-
-  const handleMissionClick = (id: string) => {
-    setSelectedMissionId(id)
-  }
-
-  const agencies = [
-    ALL_AGENCIES,
-    ...[...new Set(missions.map(m => m.agency))].sort((a, b) => a.localeCompare(b, 'uk')),
-  ]
-
-  const filteredMissions =
-    selectedAgency === ALL_AGENCIES ? missions : missions.filter(m => m.agency === selectedAgency)
-
-  const sortedMissions = [...filteredMissions].sort((a, b) =>
-    compareMissions(a, b, sortField, sortDirection),
-  )
-
-  const selectedMission = missions.find(m => m.id === selectedMissionId)
+  // Прихована місія не знаходиться серед видимих, тому її деталі й виділення не показуються
+  const selectedMission = missions.find(m => m.id === selectedMissionId) ?? null
+  const activeMissionId = selectedMission?.id ?? null
 
   return (
     <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4 shadow-sm transition-colors">
@@ -60,51 +30,18 @@ function MissionListContainer({ missions, status }: MissionListContainerProps) {
       {status === 'error' && (
         <ErrorMesage message="Дані недоступні." />
       )}
-      {status === 'ready' && missions.length === 0 && (
-        <EmptyMessage message="Запусків від початку року ще не було." />
+      {status === 'ready' && loadedCount === 0 && (
+        <EmptyMessage message="За вибраними фільтрами запусків не знайдено." />
+      )}
+      {status === 'ready' && loadedCount > 0 && missions.length === 0 && (
+        <EmptyMessage message="Усі місії приховано. Відновіть їх кнопками планувальника." />
       )}
       {status === 'ready' && missions.length > 0 && (
-        <>
-          <div className="flex flex-wrap gap-2 mb-3">
-            <select
-              aria-label="Фільтр за агенцією"
-              className="border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-lg px-2.5 py-1 text-xs font-medium max-w-full focus:outline-none focus:ring-1 focus:ring-slate-500"
-              value={selectedAgency}
-              onChange={handleAgencyChange}
-            >
-              {agencies.map(agency => (
-                <option key={agency} value={agency}>
-                  {agency}
-                </option>
-              ))}
-            </select>
-            <select
-              aria-label="Поле сортування"
-              className="border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-lg px-2.5 py-1 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-slate-500"
-              value={sortField}
-              onChange={handleSortFieldChange}
-            >
-              <option value="date">За датою</option>
-              <option value="name">За назвою</option>
-            </select>
-            <button
-              type="button"
-              className="border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg px-2.5 py-1 text-xs font-mono font-medium transition-colors"
-              onClick={handleDirectionToggle}
-            >
-              {sortDirection === 'asc' ? 'За зростанням ↑' : 'За спаданням ↓'}
-            </button>
-          </div>
-          {sortedMissions.length === 0 ? (
-            <EmptyMessage message="За цим фільтром місій немає." />
-          ) : (
             <MissionFilteredList
-              missions={sortedMissions}
-              selectedMissionId={selectedMissionId}
-              onMissionSelect={handleMissionClick}
+              missions={missions}
+              selectedMissionId={activeMissionId}
+              onMissionSelect={setSelectedMissionId}
             />
-          )}
-        </>
       )}
       {status === 'ready' && selectedMission && (
         <div className="mt-3 border-t border-slate-200 dark:border-slate-800 pt-3 text-sm space-y-1 text-slate-700 dark:text-slate-300">

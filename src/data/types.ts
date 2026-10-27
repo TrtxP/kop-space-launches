@@ -5,6 +5,7 @@ export interface LaunchMission {
   name: string
   agency: string
   rocket: string | null
+  agencyId: string
   pad: string | null
   status: string | null
   statusId: number | null
@@ -15,7 +16,16 @@ export interface LaunchMission {
   celestialBody: string | null
 }
 
+export interface AgencyPlannerRow {
+  agencyId: string
+  agency: string
+  count: number
+  total: number
+  isModified: boolean
+}
+
 export interface AgencyLaunchCount {
+  agencyId: string
   agency: string
   count: number
 }
@@ -30,4 +40,16 @@ export interface KpiData {
 export interface DashboardData {
     launches: LaunchMission[]
     nextLaunch: LaunchMission | null
+    year: number
+}
+
+export interface AgencyOption {
+  id: string
+  name: string
+}
+
+export interface LaunchQuery {
+  search: string
+  agencyId: string
+  ordering: '-net' | 'net'
 }

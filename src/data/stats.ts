@@ -6,13 +6,15 @@ export function countSuccessfulLaunches(missions: LaunchMission[]): number {
 }
 
 export function countLaunchesByAgency(missions: LaunchMission[]): AgencyLaunchCount[] {
-  const counts = new Map<string, number>()
+  // Групування за стабільним ID агенції; назва береться з першої місії групи
+  const counts = new Map<string, AgencyLaunchCount>()
   for (const mission of missions) {
-    counts.set(mission.agency, (counts.get(mission.agency) ?? 0) + 1)
+    const entry = counts.get(mission.agencyId)
+    if (entry) entry.count += 1
+    else counts.set(mission.agencyId, { agencyId: mission.agencyId, agency: mission.agency, count: 1 })
   }
 
-  return [...counts.entries()]
-    .map(([agency, count]) => ({ agency, count }))
-    .sort((a, b) => b.count - a.count || a.agency.localeCompare(b.agency, 'uk'))
+  return [...counts.values()]
+    .sort((a, b) => b.count - a.count || a.agency.localeCompare(b.agency, 'uk') || a.agencyId.localeCompare(b.agencyId))
 }
 

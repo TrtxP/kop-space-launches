@@ -1,14 +1,15 @@
-import { formatDate, formatTime } from "./format";
-import { countSuccessfulLaunches } from "./stats";
-import type { KpiData, LaunchMission, LoadStatus } from "./types";
-
-const YEAR_CAPTION = 'Від початку року (UTC)'
+import { formatDate, formatTime } from "./format"
+import { countSuccessfulLaunches } from "./stats"
+import type { DashboardData, KpiData, LoadStatus } from "./types"
 
 export function getKpiCards(
   status: LoadStatus,
-  launches: LaunchMission[],
-  nextLaunch: LaunchMission | null,
+  data: DashboardData | null,
+  hasActiveFilters: boolean
 ): KpiData[] {
+
+  const yearAction = hasActiveFilters ? 'Запуски за вибраними фільтрами від початку року (UTC)' : 'Від початку року (UTC)'
+
   if (status !== 'ready') {
     const placeholder = status === 'loading' ? '…' : '—'
     const caption = status === 'loading' ? 'Завантаження…' : 'Дані недоступні'
@@ -19,6 +20,9 @@ export function getKpiCards(
       { title: 'Успішні старти', value: placeholder, caption, isPositive },
     ]
   }
+
+  const launches = data?.launches ?? []
+  const nextLaunch = data?.nextLaunch ?? null
 
   return [
     nextLaunch
@@ -31,19 +35,19 @@ export function getKpiCards(
       : {
         title: 'Найближчий запуск',
         value: 'Немає даних',
-        caption: 'Запланованих запусків не знайдено',
+        caption: hasActiveFilters ? 'Запланованих запусків за вибраними фільтрами не знайдено' : 'Запланованих запусків не знайдено',
         isPositive: true,
       },
     {
       title: 'Запуски цьогоріч',
       value: String(launches.length),
-      caption: YEAR_CAPTION,
+      caption: yearAction,
       isPositive: true,
     },
     {
       title: 'Успішні старти',
       value: String(countSuccessfulLaunches(launches)),
-      caption: YEAR_CAPTION,
+      caption: yearAction,
       isPositive: true,
     },
   ]
