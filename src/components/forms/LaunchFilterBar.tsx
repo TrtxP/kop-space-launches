@@ -1,9 +1,9 @@
-import { Controller, type Control } from "react-hook-form"
-import type { AgencyOption, LaunchQuery } from "../../data/types"
+import { Controller } from "react-hook-form"
+import type { AgencyOption } from "../../data/types"
 import { ALL_AGENCIES_OPTION } from "../../api/launchFilters";
+import { useLaunchFilters } from "../../context/LaunchFiltersContext";
 
 interface LaunchFilterBarProps {
-  control: Control<LaunchQuery>
   onReset: () => void
   // Довідник агенцій з API (без пункту «Усі») 
   agencies: AgencyOption[]
@@ -22,7 +22,6 @@ const buttonClass = "border border-slate-300 dark:border-slate-700 rounded-lg px
 const fieldStatusClass = "text-xs font-normal text-slate-500 dark:text-slate-400"
 
 function LaunchFilterBar({
-    control,
     onReset,
     agencies,
     agenciesLoading,
@@ -30,6 +29,7 @@ function LaunchFilterBar({
     canRetryAgencies,
     onRetryAgencies,
 }: LaunchFilterBarProps) {
+    const { control } = useLaunchFilters()
     const agencyOptions = [ALL_AGENCIES_OPTION, ...agencies]
 
     return (
