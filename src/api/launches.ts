@@ -1,7 +1,7 @@
 import type { LaunchMission, LaunchQuery } from "../data/types";
-import { fetchJson } from "./http";
+import { fetchJson, HttpError } from "./http";
 import { STARTED_STATUS_IDS } from "./launchStatuses";
-import { INVALID_RESPONSE_MESSAGE, parsePage, type ApiPage } from "./parsers";
+import { INVALID_RESPONSE_MESSAGE, parseLaunchMission, parsePage, type ApiPage } from "./parsers";
 
 export const API_BASE = 'https://ll.thespacedevs.com/2.3.0'
 
@@ -73,4 +73,21 @@ export async function fetchNextLaunch(
 
   const page = await fetchPage(`${API_BASE}/launches/upcoming/?${params}`, signal)
   return page.results.length > 0 ? page.results[0] : null
+}
+
+export async function fetchLaunchById(
+  id: string,
+  signal: AbortSignal,
+): Promise<LaunchMission | null> {
+  try {
+    const json = await fetchJson(`${API_BASE}/launches/${encodeURIComponent(id)}/`, signal)
+
+    return parseLaunchMission(json)
+  } catch (error) {
+    if (error instanceof HttpError && error.status === 404) {
+      return null
+    }
+
+    throw error
+  }
 }
