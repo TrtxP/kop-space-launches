@@ -1,8 +1,8 @@
-import type { AgencyPlannerRow, LoadStatus } from "../../../data/types";
-import EmptyMessage from "../../ui/EmptyMessage";
-import ErrorMesage from "../../ui/ErrorMessage";
-import LoadingMessage from "../../ui/LoadingMessage";
-import AgencyBarRow from "../../widgets/agency-launch-chart/AgencyBarRow";
+import type { AgencyPlannerRow, LoadStatus } from "../../../data/types"
+import EmptyMessage from "../../ui/EmptyMessage"
+import ErrorMesage from "../../ui/ErrorMessage"
+import LoadingMessage from "../../ui/LoadingMessage"
+import AgencyBarRow from "../../widgets/agency-launch-chart/AgencyBarRow"
 
 interface AgencyLaunchChartContainerProps {
     rows: AgencyPlannerRow[]

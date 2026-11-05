@@ -1,6 +1,6 @@
 import type { AgencyOption } from '../data/types'
 import { getCachedAgencyOptions, loadAgencyOptions } from '../api/agencies'
-import { useFetch } from './useFetch';
+import { useFetch } from './useFetch'
 
 const NO_AGENCIES: AgencyOption[] = []
 

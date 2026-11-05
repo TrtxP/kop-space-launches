@@ -1,7 +1,7 @@
-import type { LaunchMission, LaunchQuery } from "../data/types";
-import { fetchJson, HttpError } from "./http";
-import { STARTED_STATUS_IDS } from "./launchStatuses";
-import { INVALID_RESPONSE_MESSAGE, parseLaunchMission, parsePage, type ApiPage } from "./parsers";
+import type { LaunchMission, LaunchQuery } from "../data/types"
+import { fetchJson, HttpError } from "./http"
+import { STARTED_STATUS_IDS } from "./launchStatuses"
+import { INVALID_RESPONSE_MESSAGE, parseLaunchMission, parsePage, type ApiPage } from "./parsers"
 
 export const API_BASE = 'https://ll.thespacedevs.com/2.3.0'
 

@@ -1,6 +1,6 @@
-import type { AgencyOption, LaunchMission } from "../data/types";
-import { UNKNOWN_AGENCY } from "../data/constants";
-import { TENTATIVE_STATUS_IDS } from "./launchStatuses";
+import type { AgencyOption, LaunchMission } from "../data/types"
+import { UNKNOWN_AGENCY } from "../data/constants"
+import { TENTATIVE_STATUS_IDS } from "./launchStatuses"
 
 export interface ApiPage {
   next: string | null

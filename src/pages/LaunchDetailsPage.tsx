@@ -1,13 +1,14 @@
-import { Link, useParams } from "react-router";
-import EmptyMessage from "../components/ui/EmptyMessage";
-import ErrorNotice from "../components/ui/ErrorNotice";
-import LoadingMessage from "../components/ui/LoadingMessage";
-import { NO_DATA } from "../data/constants";
-import { formatDateTime } from "../data/format";
-import { useLaunchDetails } from "../hooks/useLaunchDetails";
+import { Link, useParams } from "react-router"
+import EmptyMessage from "../components/ui/EmptyMessage"
+import ErrorNotice from "../components/ui/ErrorNotice"
+import LoadingMessage from "../components/ui/LoadingMessage"
+import { NO_DATA } from "../data/constants"
+import { formatDateTime } from "../data/format"
+import { useLaunchDetails } from "../hooks/useLaunchDetails"
+import FavoriteButton from "../components/ui/FavoriteButton"
 
 const UUID_PATTRN =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 function LaunchDetails({ id }: { id: string }) {
   const {
@@ -16,20 +17,20 @@ function LaunchDetails({ id }: { id: string }) {
     error,
     retry,
     canRetry,
-  } = useLaunchDetails(id);
+  } = useLaunchDetails(id)
 
   if (loading) {
-    return <LoadingMessage message="Завантаження деталей запуску..." />;
+    return <LoadingMessage message="Завантаження деталей запуску..." />
   }
 
   if (error !== null) {
     return (
       <ErrorNotice message={error} onRetry={retry} retryDisabled={!canRetry} />
-    );
+    )
   }
 
   if (launch === null) {
-    return <EmptyMessage message="Запуск не знайдено." />;
+    return <EmptyMessage message="Запуск не знайдено." />
   }
 
   const fields: Array<[string, string | null]> = [
@@ -44,7 +45,7 @@ function LaunchDetails({ id }: { id: string }) {
     ["Орбіта", launch.orbitName],
     ["Позначення орбіти", launch.orbitAbbrev],
     ["Небесне тіло", launch.celestialBody],
-  ];
+  ]
 
   return (
     <article
@@ -52,7 +53,10 @@ function LaunchDetails({ id }: { id: string }) {
       border-slate-200 dark:border-slate-800
       bg-white dark:bg-slate-900"
     >
-      <h3 className="mb-4 text-xl font-semibold">{launch.name}</h3>
+      <div className="mb-4 flex items-start justify-between gap-4">
+        <h3 className="min-w-0 text-xl font-semibold wrap-break-word">{launch.name}</h3>
+        <FavoriteButton id={launch.id} />
+      </div>
 
       <dl className="grid gap-4 sm:grid-cols-2">
         {fields.map(([label, value]) => (
@@ -65,11 +69,11 @@ function LaunchDetails({ id }: { id: string }) {
         ))}
       </dl>
     </article>
-  );
+  )
 }
 
 function LaunchDetailsPage() {
-  const { id } = useParams<"id">();
+  const { id } = useParams<"id">()
 
   return (
     <section className="space-y-4">
@@ -89,7 +93,7 @@ function LaunchDetailsPage() {
         <EmptyMessage message="Запуск не знайдено." />
       )}
     </section>
-  );
+  )
 }
 
 export default LaunchDetailsPage

@@ -1,7 +1,7 @@
-import type { AgencyOption } from "../data/types";
-import { fetchJson } from "./http";
-import { API_BASE } from "./launches";
-import { INVALID_RESPONSE_MESSAGE, parseAgencyPage } from "./parsers";
+import type { AgencyOption } from "../data/types"
+import { fetchJson } from "./http"
+import { API_BASE } from "./launches"
+import { INVALID_RESPONSE_MESSAGE, parseAgencyPage } from "./parsers"
 
 let cachedAgencyOptions: AgencyOption[] | null = null
 
