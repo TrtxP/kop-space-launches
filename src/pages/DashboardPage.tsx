@@ -1,56 +1,76 @@
-import AgencyLaunchChart from '../components/widgets/agency-launch-chart/AgencyLaunchChart'
-import ErrorNotice from '../components/ui/ErrorNotice'
-import KpiCard from '../components/ui/KpiCard'
-import MissionListContainer from '../components/containers/mission-list/MissionListContainer'
-import OrbitDetailsContainer from '../components/containers/OrbitDetailsContainer'
-import type { LaunchMission, LaunchQuery, LoadStatus } from '../data/types'
-import { getLimitsScopeKey, useAgencyMissionLimits } from '../hooks/useAgencyMissionLimits'
-import { useAgencyOptions } from '../hooks/useAgencyOptions'
-import { useLaunchData } from '../hooks/useLaunchData'
-import { getKpiCards } from '../data/getKpiCards'
-import { useWatch } from 'react-hook-form'
-import { DEFAULT_LAUNCH_QUERY } from '../api/launchFilters'
-import { useMemo } from 'react'
-import { useDebounce } from '../hooks/useDebounce'
-import LaunchFilterBar from '../components/forms/LaunchFilterBar'
-import { useLaunchFilters } from '../context/LaunchFiltersContext';
+import AgencyLaunchChart from "../components/widgets/agency-launch-chart/AgencyLaunchChart"
+import ErrorNotice from "../components/ui/ErrorNotice"
+import KpiCard from "../components/ui/KpiCard"
+import MissionListContainer from "../components/containers/mission-list/MissionListContainer"
+import OrbitDetailsContainer from "../components/containers/OrbitDetailsContainer"
+import type { LaunchMission, LaunchQuery, LoadStatus } from "../data/types"
+import {
+  getLimitsScopeKey,
+  useAgencyMissionLimits,
+} from "../hooks/useAgencyMissionLimits"
+import { useAgencyOptions } from "../hooks/useAgencyOptions"
+import { useLaunchData } from "../hooks/useLaunchData"
+import { getKpiCards } from "../data/getKpiCards"
+import { useMemo } from "react"
+import { useDebounce } from "../hooks/useDebounce"
+import LaunchFilterBar from "../components/forms/LaunchFilterBar"
+import { useAppDispatch, useAppSelector } from "../store/hooks"
+import { resetFilters, selectFilters } from "../store/filtersSlice"
+import LaunchAnalyticsContainer from "../components/containers/LaunchAnalyticsContainer"
 
 // Стабільний порожній масив для рендерів без даних
 const EMPTY_LAUNCHES: LaunchMission[] = []
 
 function DashboardPage() {
-  const { control, reset } = useLaunchFilters()
+  const dispatch = useAppDispatch()
+  const { search, agencyId, ordering } = useAppSelector(selectFilters)
 
-  const [search, agencyId, ordering] = useWatch({
-    control,
-    name: ['search', 'agencyId', 'ordering']
-  })
-
-  const query = useMemo<LaunchQuery>(() => ({ search: search.trim(), agencyId, ordering }), [search, agencyId, ordering])
+  const query = useMemo<LaunchQuery>(
+    () => ({ search: search.trim(), agencyId, ordering }),
+    [search, agencyId, ordering],
+  )
 
   const debouncedQuery = useDebounce(query, 400)
-  const { data, loading, error, retry, canRetry } = useLaunchData(debouncedQuery)
+  const { data, loading, error, retry, canRetry } =
+    useLaunchData(debouncedQuery)
   const agencyDirectory = useAgencyOptions()
 
   const launches = data?.launches ?? EMPTY_LAUNCHES
   const nextLaunch = data?.nextLaunch ?? null
 
   // Ключ набору застосованих параметрів, включно з роком історичної вибірки (UTC)
-  const limitsScopeKey = data !== null
-    ? getLimitsScopeKey(data.year, debouncedQuery.search, debouncedQuery.agencyId, debouncedQuery.ordering)
-    : null
+  const limitsScopeKey =
+    data !== null
+      ? getLimitsScopeKey(
+          data.year,
+          debouncedQuery.search,
+          debouncedQuery.agencyId,
+          debouncedQuery.ordering,
+        )
+      : null
 
   // Спільний стан ручних лімітів для планувальника і списку «Місії»
-  const { rows: agencyRows, visibleMissions, increment, decrement, resetAgency, resetAll } =
-    useAgencyMissionLimits(launches, limitsScopeKey)
+  const {
+    rows: agencyRows,
+    visibleMissions,
+    increment,
+    decrement,
+    resetAgency,
+    resetAll,
+  } = useAgencyMissionLimits(launches, limitsScopeKey)
 
   const handleReset = () => {
-    reset(DEFAULT_LAUNCH_QUERY)
+    dispatch(resetFilters())
     resetAll()
   }
 
-  const status: LoadStatus = loading ? 'loading' : error !== null ? 'error' : 'ready'
-  const hasActiveFilters = debouncedQuery.search !== '' || debouncedQuery.agencyId !== ''
+  const status: LoadStatus = loading
+    ? "loading"
+    : error !== null
+      ? "error"
+      : "ready"
+  const hasActiveFilters =
+    debouncedQuery.search !== "" || debouncedQuery.agencyId !== ""
   const kpiCards = getKpiCards(status, data, hasActiveFilters)
 
   return (
@@ -63,9 +83,15 @@ function DashboardPage() {
         canRetryAgencies={agencyDirectory.canRetry}
         onRetryAgencies={agencyDirectory.retry}
       />
-      {error !== null && <ErrorNotice message={error} onRetry={retry} retryDisabled={!canRetry} />}
+      {error !== null && (
+        <ErrorNotice
+          message={error}
+          onRetry={retry}
+          retryDisabled={!canRetry}
+        />
+      )}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {kpiCards.map(kpi => (
+        {kpiCards.map((kpi) => (
           <KpiCard
             key={kpi.title}
             title={kpi.title}
@@ -90,6 +116,11 @@ function DashboardPage() {
           status={status}
         />
       </div>
+      <LaunchAnalyticsContainer
+        missions={visibleMissions}
+        loadedCount={launches.length}
+        status={status}
+      />
     </>
   )
 }
