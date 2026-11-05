@@ -2,7 +2,7 @@ import type { LaunchMission, LoadStatus } from '../../data/types'
 import LoadingMessage from '../ui/LoadingMessage'
 import EmptyNotice from '../ui/EmptyMessage'
 import OrbitDetails from '../widgets/OrbitDetails'
-import ErrorMesage from '../ui/ErrorMessage';
+import ErrorMesage from '../ui/ErrorMessage'
 
 interface OrbitDetailsContainerProps {
   mission: LaunchMission | null

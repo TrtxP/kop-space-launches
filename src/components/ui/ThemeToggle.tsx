@@ -1,13 +1,14 @@
-import { useTheme } from "../../context/ThemeContext";
-
+import { useAppDispatch, useAppSelector } from "../../store/hooks"
+import { selectTheme, toggleTheme } from "../../store/themeSlice"
 
 function ThemeToggle() {
-  const {toggleTheme, isDark} = useTheme()
+  const dispatch = useAppDispatch()
+  const isDark = useAppSelector(selectTheme) === 'dark'
 
   return (
     <button
       type="button"
-      onClick={toggleTheme}
+      onClick={() => dispatch(toggleTheme())}
       className="inline-flex items-center gap-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-400 dark:focus:ring-slate-500 transition-colors"
       aria-label={`Перемкнути на ${isDark ? 'світлу' : 'темну'} тему`}
       title={`Перемкнути на ${isDark ? 'світлу' : 'темну'} тему`}

@@ -1,4 +1,4 @@
-import { SUCCESS_STATUS_ID } from './constants';
+import { SUCCESS_STATUS_ID } from './constants'
 import type { AgencyLaunchCount, LaunchMission } from './types'
 
 export function countSuccessfulLaunches(missions: LaunchMission[]): number {

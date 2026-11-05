@@ -1,20 +1,7 @@
-import { useState } from 'react'
 import type { AgencyPlannerRow, LaunchMission } from '../data/types'
 import { countLaunchesByAgency } from '../data/stats'
-
-type AgencyLimits = Readonly<Record<string, number>>
-type LimitsStore = Readonly<Record<string, AgencyLimits>>
-
-interface AgencyMissionLimitsResult {
-  rows: AgencyPlannerRow[]
-  visibleMissions: LaunchMission[]
-  increment: (agencyId: string) => void
-  decrement: (agencyId: string) => void
-  resetAgency: (agencyId: string) => void
-  resetAll: () => void
-}
-
-const NO_LIMITS: AgencyLimits = {}
+import { useAppDispatch, useAppSelector } from '../store/hooks'
+import { changeAgencyLimit, resetAgencyLimit, resetAllLimits, selectScopeLimits } from '../store/plannerSlice'
 
 // Однозначний ключ набору застосованих параметрів (після debounce) 
 export function getLimitsScopeKey(year: number, search: string, agencyId: string, ordering: string): string {
@@ -25,16 +12,9 @@ function visibleCount(total: number, savedLimit: number | undefined): number {
   return savedLimit === undefined ? total : Math.min(total, Math.max(0, savedLimit))
 }
 
-function withoutKey<T>(record: Readonly<Record<string, T>>, key: string): Record<string, T> {
-  const next = { ...record }
-  delete next[key]
-  return next
-}
-
-export function useAgencyMissionLimits(missions: LaunchMission[], scopeKey: string | null): AgencyMissionLimitsResult {
-  const [store, setStore] = useState<LimitsStore>({})
-
-  const limits = scopeKey !== null ? store[scopeKey] ?? NO_LIMITS : NO_LIMITS
+export function useAgencyMissionLimits(missions: LaunchMission[], scopeKey: string | null) {
+  const dispatch = useAppDispatch()
+  const limits = useAppSelector(state => selectScopeLimits(state, scopeKey))
 
   const totals = countLaunchesByAgency(missions)
   const totalByAgency = new Map(totals.map(item => [item.agencyId, item.count]))
@@ -56,44 +36,22 @@ export function useAgencyMissionLimits(missions: LaunchMission[], scopeKey: stri
     return true
   })
 
-  const setLimit = (agencyId: string, getNext: (current: number) => number) => {
+  const changeLimit = (agencyId: string, delta: -1 | 1) => {
     if (scopeKey === null) return
     const total = totalByAgency.get(agencyId)
     if (total === undefined) return
-
-    setStore(prev => {
-      const scopeLimits = prev[scopeKey] ?? NO_LIMITS
-      const current = visibleCount(total, scopeLimits[agencyId])
-      const next = Math.min(total, Math.max(0, getNext(current)))
-      if (next === current && (next < total || scopeLimits[agencyId] === undefined)) return prev
-
-      const nextScopeLimits = next >= total
-        ? withoutKey(scopeLimits, agencyId)
-        : { ...scopeLimits, [agencyId]: next }
-
-      return Object.keys(nextScopeLimits).length > 0
-        ? { ...prev, [scopeKey]: nextScopeLimits }
-        : withoutKey(prev, scopeKey)
-    })
+    dispatch(changeAgencyLimit({ scopeKey, agencyId, total, delta }))
   }
 
-  const increment = (agencyId: string) => setLimit(agencyId, current => current + 1)
-  const decrement = (agencyId: string) => setLimit(agencyId, current => current - 1)
+  const increment = (agencyId: string) => changeLimit(agencyId, 1)
+  const decrement = (agencyId: string) => changeLimit(agencyId, -1)
 
   // Прибирає лише ліміт цієї агенції в поточному наборі фільтрів
   const resetAgency = (agencyId: string) => {
-    if (scopeKey === null) return
-    setStore(prev => {
-      const scopeLimits = prev[scopeKey]
-      if (scopeLimits?.[agencyId] === undefined) return prev
-      const nextScopeLimits = withoutKey(scopeLimits, agencyId)
-      return Object.keys(nextScopeLimits).length > 0
-        ? { ...prev, [scopeKey]: nextScopeLimits }
-        : withoutKey(prev, scopeKey)
-    })
+    if (scopeKey !== null) dispatch(resetAgencyLimit({ scopeKey, agencyId }))
   }
 
-  const resetAll = () => setStore({})
+  const resetAll = () => dispatch(resetAllLimits())
 
   return { rows, visibleMissions, increment, decrement, resetAgency, resetAll }
 }

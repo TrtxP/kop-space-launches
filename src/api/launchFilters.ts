@@ -1,4 +1,4 @@
-import type { AgencyOption, LaunchQuery } from "../data/types";
+import type { AgencyOption, LaunchQuery } from "../data/types"
 
 export const DEFAULT_LAUNCH_QUERY: LaunchQuery = {
     search: '',

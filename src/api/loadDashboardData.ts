@@ -1,5 +1,5 @@
-import type { DashboardData, LaunchQuery } from "../data/types";
-import { fetchLaunchesThisYear, fetchNextLaunch } from "./launches";
+import type { DashboardData, LaunchQuery } from "../data/types"
+import { fetchLaunchesThisYear, fetchNextLaunch } from "./launches"
 
 interface DashboardCache {
     data: DashboardData

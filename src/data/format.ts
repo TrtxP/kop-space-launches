@@ -1,4 +1,4 @@
-import { NO_DATA } from "./constants";
+import { NO_DATA } from "./constants"
 
 function toDate(iso: string | null): Date | null {
   if (iso === null) return null

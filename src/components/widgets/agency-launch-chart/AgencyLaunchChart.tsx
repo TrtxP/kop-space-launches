@@ -1,5 +1,5 @@
 import type { AgencyPlannerRow, LoadStatus } from '../../../data/types'
-import AgencyLaunchChartContainer from '../../containers/agency-launch-chart/AgencyLaunchChartContainer';
+import AgencyLaunchChartContainer from '../../containers/agency-launch-chart/AgencyLaunchChartContainer'
 
 interface AgencyLaunchChartProps {
   rows: AgencyPlannerRow[]

@@ -1,8 +1,8 @@
-import { Route, Routes } from "react-router";
-import DashboardLayout from "./components/layout/DashboardLayout";
-import DashboardPage from "./pages/DashboardPage";
-import LaunchDetailsPage from "./pages/LaunchDetailsPage";
-import NotFoundPage from "./pages/NotFoundPage";
+import { Route, Routes } from "react-router"
+import DashboardLayout from "./components/layout/DashboardLayout"
+import DashboardPage from "./pages/DashboardPage"
+import LaunchDetailsPage from "./pages/LaunchDetailsPage"
+import NotFoundPage from "./pages/NotFoundPage"
 
 
 function App() {
