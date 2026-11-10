@@ -1,7 +1,8 @@
-import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { selectTheme, toggleTheme } from "../../store/themeSlice";
-import moonIcon from "../../../assets/moon-dark-theme-svgrepo-com.svg";
-import sunIcon from "../../../assets/sun-light-theme-svgrepo-com.svg";
+import { useAppDispatch, useAppSelector } from "../../store/hooks"
+import { toggleTheme } from "../../store/slices/themeSlice"
+import { selectTheme } from "../../store/selectors"
+import moonIcon from "../../../assets/moon-dark-theme-svgrepo-com.svg"
+import sunIcon from "../../../assets/sun-light-theme-svgrepo-com.svg"
 
 function ThemeToggle() {
   const dispatch = useAppDispatch();

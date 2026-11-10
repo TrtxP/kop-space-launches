@@ -10,7 +10,7 @@ import {
   YAxis,
 } from "recharts"
 import type { AgencyLaunchCount } from "../../../data/types"
-import type { ChartType } from "../../../store/chartSlice"
+import type { ChartType } from "../../../store/slices/chartSlice"
 
 interface LaunchAnalyticsChartProps {
   data: AgencyLaunchCount[]

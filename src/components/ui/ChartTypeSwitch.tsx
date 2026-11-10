@@ -1,4 +1,4 @@
-import type { ChartType } from "../../store/chartSlice"
+import type { ChartType } from "../../store/slices/chartSlice"
 import barIncon from "../../../assets/mdi-chart-bar.svg"
 import pieIcon from "../../../assets/game-icons-pie-chart.svg"
 

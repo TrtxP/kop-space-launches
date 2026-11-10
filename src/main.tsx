@@ -4,7 +4,7 @@ import "./index.css"
 import App from "./App"
 import { BrowserRouter } from "react-router"
 import { Provider } from "react-redux"
-import { store } from "./store/store"
+import { store } from "./store"
 import ThemeSync from "./components/layout/ThemeSync"
 
 createRoot(document.getElementById("root")!).render(

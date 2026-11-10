@@ -1,8 +1,8 @@
 import { countLaunchesByAgency } from "../../data/stats"
 import type { LaunchMission, LoadStatus } from "../../data/types"
-import { selectChartType, setChartType } from "../../store/chartSlice"
+import { setChartType } from "../../store/slices/chartSlice"
 import { useAppDispatch, useAppSelector } from "../../store/hooks"
-import { selectTheme } from "../../store/themeSlice"
+import { selectTheme, selectChartType } from "../../store/selectors"
 import ChartTypeSwitch from "../ui/ChartTypeSwitch"
 import EmptyMessage from "../ui/EmptyMessage"
 import ErrorMesage from "../ui/ErrorMessage"
@@ -30,7 +30,7 @@ function LaunchAnalyticsContainer({ missions, loadedCount, status }: LaunchAnaly
             <p className="mb-4 text-sm text-slate-500 dark:text-slate-400">Від початку року UTC, з урахуванням фільтрів і лімітів планувальника. КРІ вище враховують вибірку до ручних лімітів.</p>
 
             {status === 'loading' && <LoadingMessage message="Завантажння статистики..." />}
-            {status === 'error' && <ErrorMesage message="статистики недоступна." />}
+            {status === 'error' && <ErrorMesage message="Статистика недоступна." />}
             {status === 'ready' && chartData.length === 0 && (
                 <EmptyMessage message={loadedCount === 0 ? 'За вибраними фільтрами запусків не знайдено.' : 'Усі місії приховано. Відновість ліміти планувальника.'} />
             )}

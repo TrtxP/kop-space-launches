@@ -1,5 +1,4 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
-import type { RootState } from "./store"
 
 export type ChartType = 'bar' | 'pie'
 interface ChartState { type: ChartType }
@@ -16,5 +15,4 @@ const chartSlice = createSlice({
 })
 
 export const { setChartType } = chartSlice.actions
-export const selectChartType = (state: RootState) => state.chart.type
 export default chartSlice.reducer

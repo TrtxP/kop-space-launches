@@ -2,11 +2,11 @@ import type { AgencyOption } from "../../data/types"
 import { ALL_AGENCIES_OPTION } from "../../api/launchFilters"
 import { useAppDispatch, useAppSelector } from "../../store/hooks"
 import {
-  selectFilters,
   setAgencyId,
   setOrdering,
   setSearch,
-} from "../../store/filtersSlice"
+} from "../../store/slices/filtersSlice"
+import { selectFilters } from "../../store/selectors";
 
 interface LaunchFilterBarProps {
   onReset: () => void

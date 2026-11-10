@@ -1,6 +1,6 @@
 import { useLayoutEffect } from "react"
 import { useAppSelector } from "../../store/hooks"
-import { selectTheme } from "../../store/themeSlice"
+import { selectTheme } from "../../store/selectors"
 
 function ThemeSync() {
     const theme = useAppSelector(selectTheme)

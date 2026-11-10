@@ -1,7 +1,8 @@
 import type { AgencyPlannerRow, LaunchMission } from '../data/types'
 import { countLaunchesByAgency } from '../data/stats'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
-import { changeAgencyLimit, resetAgencyLimit, resetAllLimits, selectScopeLimits } from '../store/plannerSlice'
+import { changeAgencyLimit, resetAgencyLimit, resetAllLimits } from '../store/slices/plannerSlice'
+import { selectScopeLimits } from '../store/selectors'
 
 // Однозначний ключ набору застосованих параметрів (після debounce) 
 export function getLimitsScopeKey(year: number, search: string, agencyId: string, ordering: string): string {

@@ -15,8 +15,9 @@ import { useMemo } from "react"
 import { useDebounce } from "../hooks/useDebounce"
 import LaunchFilterBar from "../components/forms/LaunchFilterBar"
 import { useAppDispatch, useAppSelector } from "../store/hooks"
-import { resetFilters, selectFilters } from "../store/filtersSlice"
+import { resetFilters } from "../store/slices/filtersSlice"
 import LaunchAnalyticsContainer from "../components/containers/LaunchAnalyticsContainer"
+import { selectFilters } from "../store/selectors"
 
 // Стабільний порожній масив для рендерів без даних
 const EMPTY_LAUNCHES: LaunchMission[] = []
