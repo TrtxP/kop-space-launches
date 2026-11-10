@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { RateLimitError } from "../api/http"
+import { RateLimitError } from "../api/exceptionHandlers"
 
 interface UseFetchOptions<T> {
     loader: (signal: AbortSignal) => Promise<T>

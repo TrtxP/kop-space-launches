@@ -1,5 +1,6 @@
 import type { LaunchMission, LaunchQuery } from "../data/types"
-import { fetchJson, HttpError } from "./http"
+import { HttpError } from "./exceptionHandlers"
+import { fetchJson } from "./http"
 import { STARTED_STATUS_IDS } from "./launchStatuses"
 import { INVALID_RESPONSE_MESSAGE, parseLaunchMission, parsePage, type ApiPage } from "./parsers"
 
