@@ -30,7 +30,7 @@ function LaunchAnalyticsContainer({ missions, loadedCount, status }: LaunchAnaly
             <p className="mb-4 text-sm text-slate-500 dark:text-slate-400">Від початку року UTC, з урахуванням фільтрів і лімітів планувальника. КРІ вище враховують вибірку до ручних лімітів.</p>
 
             {status === 'loading' && <LoadingMessage message="Завантажння статистики..." />}
-            {status === 'error' && <ErrorMesage message="статистики недоступна." />}
+            {status === 'error' && <ErrorMesage message="Статистика недоступна." />}
             {status === 'ready' && chartData.length === 0 && (
                 <EmptyMessage message={loadedCount === 0 ? 'За вибраними фільтрами запусків не знайдено.' : 'Усі місії приховано. Відновість ліміти планувальника.'} />
             )}
