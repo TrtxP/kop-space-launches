@@ -1,5 +1,4 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
-import type { RootState } from "./store"
 
 interface PlannerState {
     limitsByScope: Record<string, Record<string, number>>
@@ -45,10 +44,6 @@ const plannerSlice = createSlice({
         },
     },
 })
-
-const NO_LIMITS: Readonly<Record<string, number>> = {}
-
-export const selectScopeLimits = (state: RootState, scopeKey: string | null) => scopeKey === null ? NO_LIMITS : state.planner.limitsByScope[scopeKey] ?? NO_LIMITS
 
 export const { changeAgencyLimit, resetAgencyLimit, resetAllLimits } = plannerSlice.actions
 export default plannerSlice.reducer

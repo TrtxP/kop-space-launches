@@ -1,5 +1,6 @@
-import { selectIsFavorite, toggleFavorite } from "../../store/favoritesSlice"
+import { toggleFavorite } from "../../store/slices/favoritesSlice"
 import { useAppDispatch, useAppSelector } from "../../store/hooks"
+import { selectIsFavorite } from "../../store/selectors"
 import trashIcon from "../../../assets/iconoir-trash.svg"
 
 interface FavoriteButtonProps {

@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit"
-import favoritesReducer from "./favoritesSlice"
-import filtersReducer from "./filtersSlice"
-import themeReducer from "./themeSlice"
-import plannerReducer from "./plannerSlice"
-import chartReducer from "./chartSlice"
+import favoritesReducer from "./slices/favoritesSlice"
+import filtersReducer from "./slices/filtersSlice"
+import themeReducer from "./slices/themeSlice"
+import plannerReducer from "./slices/plannerSlice"
+import chartReducer from "./slices/chartSlice"
 
 export const store = configureStore({
     reducer: {

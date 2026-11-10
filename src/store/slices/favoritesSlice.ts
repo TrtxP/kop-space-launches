@@ -1,5 +1,4 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
-import type { RootState } from "./store"
 
 interface FavoritesState {
     ids: string[]
@@ -26,7 +25,4 @@ const favoritesSlice = createSlice({
 })
 
 export const { toggleFavorite } = favoritesSlice.actions
-
-export const selectIsFavorite = (state: RootState, id: string) => state.favorites.ids.includes(id)
-
 export default favoritesSlice.reducer

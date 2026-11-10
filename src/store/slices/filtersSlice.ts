@@ -1,7 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
-import { DEFAULT_LAUNCH_QUERY } from "../api/launchFilters"
-import type { LaunchQuery } from "../data/types"
-import type { RootState } from "./store"
+import { DEFAULT_LAUNCH_QUERY } from "../../api/launchFilters"
+import type { LaunchQuery } from "../../data/types"
 
 const initialState: LaunchQuery = { ...DEFAULT_LAUNCH_QUERY }
 
@@ -25,5 +24,4 @@ const filtersSlice = createSlice({
 })
 
 export const { setSearch, setAgencyId, setOrdering, resetFilters } = filtersSlice.actions
-export const selectFilters = (state: RootState) => state.filters 
 export default filtersSlice.reducer
